@@ -1,15 +1,16 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "",
   "type": "module",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "ts-node src/index.ts",
-  "migrate:up": "cross-env DATABASE_URL=postgres://postgres:12345@localhost:5438/notes_db npx node-pg-migrate up",
-  "migrate:down": "cross-env DATABASE_URL=postgres://postgres:12345@localhost:5438/notes_db npx node-pg-migrate down",
-  "migrate:create": "npx node-pg-migrate create"
+    "dev": "ts-node --esm src/index.ts",
+    "start": "npm run migrate:up && npm run dev",
+    "migrate:up": "node-pg-migrate up",
+    "migrate:down": "node-pg-migrate down",
+    "migrate:create": "node-pg-migrate create"
   },
   "keywords": [],
   "author": "",
@@ -31,6 +32,7 @@
     "cross-env": "^10.0.0",
     "node-pg-migrate": "^8.0.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "tsx": "^4.7.0"
   }
 }
