@@ -2,6 +2,7 @@ import express, {Request, Response} from 'express'
 import userRouter from "./routes/note.routes"
 import logger from './middleware/logger'
 import errorhandler from './middleware/errorHandler'
+//npm run migrate:up --- apply migration (package.json)
 
 import cors from "cors"
 
