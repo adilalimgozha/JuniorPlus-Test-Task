@@ -1,66 +1,113 @@
 <script setup lang="ts">
-import {ref, onMounted} from "vue"
-import SingleNote from "../components/SingleNote.vue";
-import { useRouter } from 'vue-router';
+import { ref, onMounted } from "vue"
+import SingleNote from "../components/SingleNote.vue"
+import { useRouter } from 'vue-router'
 
 const router = useRouter()
+
 
 interface Note {
   id: number
   title: string
   content: string
+  created_at?: string
+  updated_at?: string
 }
+
 
 const notes = ref<Note[]>([])
-
 const title = ref<string>("")
 const content = ref<string>("")
+const loading = ref<boolean>(false)
+const error = ref<string>("")
 
-function goToDetails(ID: number) {
-  router.push(`/${ID}`)
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000'
+
+
+function goToDetails(id: number): void {
+  router.push(`/${id}`)
 }
 
 
-async function getNotes() {
-  try{
-    const res = await fetch("http://localhost:3000/api/notes")
-    if (!res.ok) throw new Error("Error of fetching data")
-    return res.json()
-  }catch(err){
-    console.error(err)
+async function getNotes(): Promise<Note[]> {
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/notes`)
+    
+    if (!res.ok) {
+      throw new Error(`HTTP error! status: ${res.status}`)
+    }
+    
+    const data: Note[] = await res.json()
+    return data
+    
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
+    console.error('getNotes error:', err)
+    error.value = `Error fetching notes: ${errorMessage}`
+    return [] 
   }
 }
 
-async function addNote() {
+
+async function addNote(): Promise<void> {
   try {
-    const res = await fetch("http://localhost:3000/api/notes", {
+
+    if (!title.value.trim() || !content.value.trim()) {
+      error.value = "Title and content are required"
+      return
+    }
+
+    loading.value = true
+    error.value = ""
+
+    const res = await fetch(`${API_BASE_URL}/api/notes`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
       body: JSON.stringify({
-        title: title.value,
-        content: content.value
+        title: title.value.trim(),
+        content: content.value.trim()
       })
     })
 
     if (!res.ok) {
-      throw new Error("Error of adding Note")
+      throw new Error(`HTTP error! status: ${res.status}`)
     }
 
-    const data = await res.json()
-    notes.value = await getNotes()
+    const newNote: Note = await res.json()
+    
+    notes.value.unshift(newNote)  //note on top
+    
     title.value = ""
     content.value = ""
-    console.log("Server response:", data)
-  } catch (err) {
-    console.error(err)
+    
+    console.log("Note added successfully:", newNote)
+    
+  } catch (err: unknown) {
+    const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred'
+    error.value = `Error adding note: ${errorMessage}`
+    console.error('addNote error:', err)
+  } finally {
+    loading.value = false
   }
 }
 
 
-onMounted(async () => {
-  notes.value = await getNotes()
+async function refreshNotes(): Promise<void> {
+  loading.value = true
+  error.value = ""
+  
+  const fetchedNotes = await getNotes()
+  notes.value = fetchedNotes
+  
+  loading.value = false
+}
+
+
+onMounted(async (): Promise<void> => {
+  await refreshNotes()
 })
 
 
@@ -79,7 +126,7 @@ onMounted(async () => {
     <label for="content">Enter Content</label>
     <input v-model="content" id="content" type="text">
     </div>
-    <button type="submit">Add</button>
+    <button :disabled="loading" type="submit">Add</button>
   </form>
 
   <div class="app">
