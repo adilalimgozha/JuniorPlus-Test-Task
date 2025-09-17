@@ -24,5 +24,8 @@ const props = defineProps<{
         border-radius: 2em;
         margin-top: 1em;
         cursor: pointer;
+        background-color: rgb(195, 180, 133);
+        word-break: normal;
+        overflow-wrap: anywhere;
     }
 </style>

@@ -93,8 +93,10 @@ onMounted(() => {
         <button @click="changeEditMode">Cancel</button>
     </div>
     <div v-else>
-        <h2>{{ note?.title }}</h2>
-        <div>{{ note?.content }}</div>
+        <div class="info">
+            <h2>{{ note?.title }}</h2>
+            <div class="note">{{ note?.content }}</div>
+        </div>
         <button @click="handleDelete">Delete</button>
         <button @click="changeEditMode">Edit</button>
     </div>
@@ -105,4 +107,18 @@ onMounted(() => {
 button{
     margin: 1em;
 }
+
+.info {
+    background-color: rgb(222, 162, 21);
+    padding: 1em;
+    border-radius: 2em;
+    margin-top: 2em;
+    margin-bottom: 2em;
+    min-height: 10em;
+    min-width: 20em;
+    max-width: 40em;
+    word-break: normal;
+    overflow-wrap: anywhere;
+}
+
 </style>

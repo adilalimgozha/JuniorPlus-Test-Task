@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {ref, onMounted} from "vue"
-import SingleNote from "../../components/SingleNote.vue";
+import SingleNote from "../components/SingleNote.vue";
 import { useRouter } from 'vue-router';
 
 const router = useRouter()
@@ -115,6 +115,28 @@ html, body, #app {
     display: flex;
     justify-content: space-between;
     margin: 1em;
+}
+
+form{
+  background-color: rgb(222, 162, 21);
+  padding: 1em;
+  border-radius: 2em;
+}
+
+input {
+  display: block;
+  padding: 0.375rem 0.75rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #212529;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #bdbdbd;
+  border-radius: 0.25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+  margin-left: 2em;
 }
 
 </style>
